@@ -48,12 +48,12 @@ export default function IntroPage() {
           "relative flex flex-col items-center justify-end transition-all duration-1000 ease-out z-10 w-1/2",
           step >= 1 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-32"
         )}>
-          <div className="relative w-full aspect-[3/4] max-w-[300px] md:max-w-[400px] drop-shadow-xl">
+          <div className="relative w-full aspect-[768/1024] max-w-[350px] md:max-w-[450px] drop-shadow-xl">
              <Image 
-               src="/assets/boy.png" 
+               src="/assets/Animation img.png" 
                alt="Boy with message" 
                fill 
-               className="object-contain mix-blend-multiply pointer-events-none" 
+               className="object-cover object-left mix-blend-multiply pointer-events-none" 
                priority
              />
           </div>
@@ -64,12 +64,12 @@ export default function IntroPage() {
           "relative flex flex-col items-center justify-end transition-all duration-1000 ease-out z-10 w-1/2",
           step >= 2 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-32"
         )}>
-          <div className="relative w-full aspect-[3/4] max-w-[300px] md:max-w-[400px] drop-shadow-xl">
+          <div className="relative w-full aspect-[768/1024] max-w-[350px] md:max-w-[450px] drop-shadow-xl">
              <Image 
-               src="/assets/girl.png" 
+               src="/assets/Animation img.png" 
                alt="Girl with message" 
                fill 
-               className="object-contain mix-blend-multiply pointer-events-none" 
+               className="object-cover object-right mix-blend-multiply pointer-events-none" 
                priority
              />
           </div>
