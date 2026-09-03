@@ -11,7 +11,7 @@ export default function WelcomePage() {
             src="/assets/logo smart finding.png" 
             alt="F!ndSyncR Logo" 
             fill
-            className="object-contain"
+            className="object-contain mix-blend-multiply"
             priority
           />
         </div>

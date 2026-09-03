@@ -25,6 +25,14 @@ export default function ClaimPage() {
   const [otp, setOtp] = useState('');
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState('');
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -143,6 +151,7 @@ export default function ClaimPage() {
       });
       if (otpRes.ok) {
         setStep('otp');
+        setCountdown(60);
       } else {
         setError('Failed to send OTP.');
       }
@@ -273,6 +282,9 @@ export default function ClaimPage() {
                     YES, THIS IS MINE
                   </button>
                 </div>
+                <div className="text-center mt-2">
+                  <p className="text-xs text-slate-500">If you click YES, you will be asked a private verification question to securely confirm ownership.</p>
+                </div>
               </div>
             )}
 
@@ -331,6 +343,29 @@ export default function ClaimPage() {
                 >
                   {otpLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify Code'}
                 </button>
+                
+                <div className="text-center mt-4 flex flex-col gap-2">
+                  {countdown > 0 ? (
+                    <p className="text-sm text-slate-500">
+                      Resend code in <span className="font-semibold text-slate-700">{countdown}s</span>
+                    </p>
+                  ) : (
+                    <button 
+                      type="button" 
+                      onClick={async () => {
+                        setCountdown(60);
+                        await fetch('/api/claims/send-otp', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ token })
+                        });
+                      }} 
+                      className="text-sm text-blue-600 font-medium hover:underline"
+                    >
+                      Resend Verification Code
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>

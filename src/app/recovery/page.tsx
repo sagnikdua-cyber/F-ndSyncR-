@@ -158,7 +158,7 @@ export default function RecoveryPage() {
                           Collection Instructions
                         </h4>
                         <p className="text-sm text-slate-600 mb-4">
-                          Please proceed to the Main Campus Security Desk to collect your item. You must bring your Student ID.
+                          Please proceed to the F!ndSyncR Box within 48 hours to collect your item. You must present your Student ID and this reference ID at the box to authorize the unlock. This screen does not remotely unlock the hardware.
                         </p>
                         <div className="bg-white border border-slate-100 rounded-lg p-3 inline-flex flex-col">
                           <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Reference ID</span>

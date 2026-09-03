@@ -172,7 +172,7 @@ export default function NotificationsPage() {
                         {notif.title}
                       </h4>
                       <span className="text-xs text-muted-foreground shrink-0 mt-1">
-                        {new Date(notif.createdAt).toLocaleDateString()}
+                        {new Date(notif.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                       </span>
                     </div>
                     <p className={cn("text-sm", !notif.isRead ? "text-slate-700" : "text-muted-foreground")}>

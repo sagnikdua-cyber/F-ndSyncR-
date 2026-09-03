@@ -41,45 +41,51 @@ export default function IntroPage() {
         </Link>
       </div>
 
-      <div className="relative w-full max-w-4xl h-[70vh] flex flex-col items-center justify-center">
+      <div className="relative w-full max-w-4xl h-[80vh] flex items-end justify-between px-4 md:px-12 pb-12">
         
-        {/* First Speech Bubble (Boy) */}
+        {/* Boy Character & Bubble (Left) */}
         <div className={cn(
-          "absolute top-[10%] md:left-[20%] left-[5%] max-w-[250px] transition-all duration-700 ease-out z-20",
-          step >= 1 && step < 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          "relative flex flex-col items-center transition-all duration-1000 ease-out z-10 w-1/2",
+          step >= 1 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-32"
         )}>
-          <div className="bg-white p-4 rounded-3xl rounded-br-sm shadow-lg border border-slate-100">
-            <p className="text-lg text-slate-800 font-medium">
+          {/* Boy's Speech Bubble */}
+          <div className="bg-white p-4 mb-4 rounded-3xl rounded-br-sm shadow-lg border border-slate-100 max-w-[250px] relative z-20">
+            <p className="text-sm md:text-lg text-slate-800 font-medium">
               &quot;Have you lost your belongings?&quot;
             </p>
           </div>
+          {/* Boy Sprite (Clipping the left third of the image) */}
+          <div className="relative w-48 h-72 md:w-64 md:h-96 overflow-hidden drop-shadow-xl">
+             <Image 
+               src="/assets/Animation img.png" 
+               alt="Boy" 
+               fill 
+               className="object-cover object-[20%_60%] scale-[2.2] translate-y-8 mix-blend-multiply pointer-events-none" 
+               priority
+             />
+          </div>
         </div>
 
-        {/* Central Image */}
+        {/* Girl Character & Bubble (Right) */}
         <div className={cn(
-          "relative w-72 h-72 md:w-96 md:h-96 transition-all duration-1000 ease-in-out z-10",
-          step === 0 ? "opacity-0 scale-90 translate-y-10" : 
-          step < 3 ? "opacity-100 scale-100 translate-y-0" : 
-          "opacity-0 scale-110 -translate-y-10"
+          "relative flex flex-col items-center transition-all duration-1000 ease-out z-10 w-1/2",
+          step >= 2 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-32"
         )}>
-          <Image 
-            src="/assets/Animation img.png" 
-            alt="F!ndSyncR Characters" 
-            fill
-            className="object-contain drop-shadow-xl"
-            priority
-          />
-        </div>
-
-        {/* Second Speech Bubble (Girl) */}
-        <div className={cn(
-          "absolute bottom-[10%] md:right-[20%] right-[5%] max-w-[280px] transition-all duration-700 ease-out z-20",
-          step >= 2 && step < 3 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-        )}>
-          <div className="bg-primary p-4 rounded-3xl rounded-tl-sm shadow-lg border border-primary/20 text-primary-foreground">
-            <p className="text-lg font-medium">
+          {/* Girl's Speech Bubble */}
+          <div className="bg-primary p-4 mb-4 rounded-3xl rounded-bl-sm shadow-lg border border-primary/20 text-primary-foreground max-w-[280px] relative z-20">
+            <p className="text-sm md:text-lg font-medium">
               &quot;Don&apos;t worry! Our friend F!ndSyncR will help you get it back.&quot;
             </p>
+          </div>
+          {/* Girl Sprite (Clipping the middle third of the image) */}
+          <div className="relative w-48 h-72 md:w-64 md:h-96 overflow-hidden drop-shadow-xl">
+             <Image 
+               src="/assets/Animation img.png" 
+               alt="Girl" 
+               fill 
+               className="object-cover object-[50%_60%] scale-[2.2] translate-y-8 mix-blend-multiply pointer-events-none" 
+               priority
+             />
           </div>
         </div>
 

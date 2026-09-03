@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -23,14 +23,23 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
   // If already logged in, they shouldn't be here, but middleware/provider will redirect them
   if (user) {
     router.replace("/dashboard");
     return null;
   }
 
-  const handleRequestOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRequestOtp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!enrollment) return;
     
     setLoading(true);
@@ -53,6 +62,7 @@ export default function LoginPage() {
     } else {
       setMaskedEmail(res.maskedEmail || "");
       setStep("otp");
+      setCountdown(60);
     }
   };
 
@@ -151,11 +161,24 @@ export default function LoginPage() {
                 <Button type="submit" className="w-full h-12 text-md shadow-sm bg-success hover:bg-success/90 text-success-foreground" disabled={loading}>
                   {loading ? "Verifying..." : "Verify & Login"}
                 </Button>
-                <div className="text-center mt-4">
+                <div className="text-center mt-4 flex flex-col gap-2">
+                  {countdown > 0 ? (
+                    <p className="text-sm text-slate-500">
+                      Resend code in <span className="font-semibold text-slate-700">{countdown}s</span>
+                    </p>
+                  ) : (
+                    <button 
+                      type="button" 
+                      onClick={() => handleRequestOtp()} 
+                      className="text-sm text-primary font-medium hover:underline"
+                    >
+                      Resend Verification Code
+                    </button>
+                  )}
                   <button 
                     type="button" 
                     onClick={() => setStep("enrollment")} 
-                    className="text-sm text-muted-foreground hover:text-slate-700 underline"
+                    className="text-sm text-muted-foreground hover:text-slate-700 underline mt-2"
                   >
                     Use a different enrollment number
                   </button>

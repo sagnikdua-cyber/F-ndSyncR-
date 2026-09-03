@@ -91,7 +91,15 @@ export default function DashboardPage() {
             <Card className="hover:border-primary/50 cursor-pointer h-full transition-all active:scale-[0.98]">
               <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2 h-full">
                 <ShieldCheck className="w-6 h-6 text-muted-foreground" />
-                <span className="text-sm font-medium">Verification Status</span>
+                <span className="text-sm font-medium">Verification</span>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/recovery">
+            <Card className="hover:border-primary/50 cursor-pointer h-full transition-all active:scale-[0.98]">
+              <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2 h-full">
+                <ShieldCheck className="w-6 h-6 text-muted-foreground" />
+                <span className="text-sm font-medium">Recovery Status</span>
               </CardContent>
             </Card>
           </Link>
