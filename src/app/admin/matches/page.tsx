@@ -1,78 +1,82 @@
-import { adminDb } from "@/lib/firebase/admin";
-import Image from "next/image";
-import { ShieldAlert, CheckCircle, Clock } from "lucide-react";
+"use client";
 
-export const dynamic = "force-dynamic";
-
-interface AdminCandidate {
-  id: string;
-  rank: number;
-  matchScore: number;
-  lostItemData: Record<string, unknown> | null;
-}
-
-interface AdminFoundItem {
-  id: string;
-  sourceType: string;
-  imageUrl?: string;
-  processingStatus: string;
-  matchingStatus: string;
-  objectType: string;
-  publicCharacteristics?: Record<string, unknown>;
-  privateCharacteristics?: Record<string, unknown>;
-  candidates?: AdminCandidate[];
-}
-
-// Server component to fetch matches directly using Admin SDK
-async function getMatchesData() {
-  if (!adminDb) return [];
-
-  try {
-    // Fetch all found items that have been analyzed/matched
-    const foundSnapshot = await adminDb.collection("foundItems")
-      .where("processingStatus", "in", ["analyzed", "matched"])
-      .orderBy("createdAt", "desc")
-      .limit(50)
-      .get();
-
-    const foundItems = await Promise.all(foundSnapshot.docs.map(async (doc) => {
-      const data = doc.data();
-      
-      // Fetch candidates for this found item
-      const matchesSnapshot = await adminDb!.collection("matches")
-        .where("foundItemId", "==", doc.id)
-        .orderBy("rank", "asc")
-        .get();
-
-      const candidates = await Promise.all(matchesSnapshot.docs.map(async (mDoc) => {
-        const matchData = mDoc.data();
-        // Fetch corresponding lost item
-        const lostDoc = await adminDb!.collection("lostItems").doc(matchData.lostItemId).get();
-        return {
-          id: mDoc.id,
-          ...matchData,
-          lostItemData: lostDoc.data() || null
-        };
-      }));
-
-      return {
-        id: doc.id,
-        ...data,
-        candidates
-      };
-    }));
-
-    return foundItems;
-  } catch (error) {
-    console.error("Firestore disabled or failed during build:", error);
-    return [];
-  }
-}
-
+import { useEffect, useState } from "react";
 import { AdminMatchesClient } from "./ClientWrapper";
+import { useAuth } from "@/components/providers/AuthProvider";
+import { AlertTriangle } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
-export default async function AdminMatchesPage() {
-  const foundItems = await getMatchesData();
+export default function AdminMatchesPage() {
+  const { user, claims, loading: authLoading } = useAuth();
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [foundItems, setFoundItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (authLoading) return;
+    
+    if (!user || claims?.role !== "admin") {
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const token = await user.getIdToken();
+        const res = await fetch("/api/admin/matches", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const json = await res.json();
+        
+        if (!res.ok) throw new Error(json.error);
+        setFoundItems(json.items || []);
+      } catch (err: unknown) {
+        const e = err as { message: string };
+        setError(e.message || "Failed to load admin matches");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user, claims, authLoading]);
+
+  if (authLoading) {
+    return <div className="min-h-screen bg-[#FAFAFA] p-6 lg:p-12 flex justify-center items-center">Loading authentication...</div>;
+  }
+
+  if (!user || claims?.role !== "admin") {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6 md:p-12 flex flex-col items-center justify-center">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">Unauthorized Access</h2>
+          <p className="text-muted-foreground mb-6">
+            You don&apos;t have permission to access the Admin Area. This feature is restricted to authorized administrators.
+          </p>
+          <Link href="/dashboard">
+            <Button className="w-full">Back to Dashboard</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return <div className="min-h-screen bg-[#FAFAFA] p-6 lg:p-12 flex justify-center items-center">Loading matches data...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-8">
+        <div className="p-4 bg-red-50 text-red-600 rounded-xl">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] p-6 lg:p-12">
@@ -82,6 +86,11 @@ export default async function AdminMatchesPage() {
           <div>
             <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Match Pipeline Admin</h1>
             <p className="text-gray-500 mt-2">View AI analysis results and candidate rankings.</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/admin">
+              <Button variant="outline" size="sm">Back to Dashboard</Button>
+            </Link>
           </div>
         </header>
 

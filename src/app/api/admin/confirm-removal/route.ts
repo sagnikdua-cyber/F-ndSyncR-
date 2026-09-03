@@ -1,20 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminDb } from "@/lib/firebase/admin";
+import { requireAdminAuth } from "@/lib/auth-server";
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const idToken = authHeader.split("Bearer ")[1];
-    const decodedToken = await adminAuth?.verifyIdToken(idToken);
-    
-    // In a real app, verify `decodedToken.admin === true`.
-    if (!decodedToken) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
+    const { decodedToken, error } = await requireAdminAuth(req);
+    if (error || !decodedToken) return error || NextResponse.json({ error: "Invalid token" }, { status: 401 });
 
     const { foundItemId } = await req.json();
     if (!foundItemId) return NextResponse.json({ error: "Found Item ID is required" }, { status: 400 });

@@ -1,22 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminDb } from "@/lib/firebase/admin";
 import { MatchRecord } from "@/types";
+import { requireAdminAuth } from "@/lib/auth-server";
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const idToken = authHeader.split("Bearer ")[1];
-    const decodedToken = await adminAuth?.verifyIdToken(idToken);
-    
-    // Only admins should be able to do this. Assuming standard Firebase custom claims or we just check if token exists for now.
-    // In a real app, verify `decodedToken.admin === true`.
-    if (!decodedToken) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
+    const { error } = await requireAdminAuth(req);
+    if (error) return error;
 
     const { matchId } = await req.json();
     if (!matchId) return NextResponse.json({ error: "Match ID is required" }, { status: 400 });
