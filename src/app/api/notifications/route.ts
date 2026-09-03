@@ -15,10 +15,7 @@ export async function GET(req: NextRequest) {
     if (!decodedToken) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-
-    // Use enrollment number if available, else standard UID
-    const userId = decodedToken.enrollmentNumber || decodedToken.uid;
-
+    const userId = decodedToken.uid;
     const notifications = await NotificationService.getUserNotifications(userId as string);
     return NextResponse.json({ notifications });
   } catch (error) {
@@ -40,8 +37,7 @@ export async function PUT(req: NextRequest) {
     if (!decodedToken) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-
-    const userId = decodedToken.enrollmentNumber || decodedToken.uid;
+    const userId = decodedToken.uid;
     const body = await req.json();
 
     if (body.action === 'markAllAsRead') {

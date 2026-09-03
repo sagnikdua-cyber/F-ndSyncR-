@@ -26,6 +26,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid state' }, { status: 400 });
     }
 
+    if (matchData.claimTokenExpiresAt && new Date(matchData.claimTokenExpiresAt) < new Date()) {
+      return NextResponse.json({ error: 'Claim token expired' }, { status: 400 });
+    }
+
     const nowStr = new Date().toISOString();
 
     // Transition to verification_pending if not already

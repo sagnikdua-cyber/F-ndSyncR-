@@ -15,9 +15,7 @@ export async function GET(req: NextRequest) {
     if (!decodedToken) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-
-    const userId = decodedToken.enrollmentNumber || decodedToken.uid;
-
+    const userId = decodedToken.uid;
     if (!adminDb) return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
 
     // Fetch matches for this student without orderBy to avoid requiring a composite index
