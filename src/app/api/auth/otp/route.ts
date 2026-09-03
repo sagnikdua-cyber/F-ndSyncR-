@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase/admin';
+import { EmailService } from '@/services/email.service';
 
 // In-memory store for OTPs (strictly for Phase 2 prototype before a real cache/DB is used)
 const otpStore = new Map<string, { otp: string; expiresAt: number; uid: string }>();
@@ -46,8 +47,15 @@ export async function POST(request: Request) {
         uid
       });
 
-      // 3. (Future) Send via Resend
-      console.log(`[DEBUG] OTP for ${studentData.collegeEmail}: ${generatedOtp}`);
+      // 3. Send via Resend
+      console.log(`[DEBUG] Generating OTP for ${studentData.collegeEmail}`);
+      
+      const emailSent = await EmailService.sendLoginOtp(studentData.collegeEmail, generatedOtp);
+      if (!emailSent) {
+        // We log the error but still return success to the UI in prototype mode 
+        // to not break the flow if Resend is missing API keys
+        console.warn(`[WARNING] Failed to send OTP to ${studentData.collegeEmail}. Did you set RESEND_API_KEY?`);
+      }
 
       // Mask email for UI
       const email = studentData.collegeEmail;

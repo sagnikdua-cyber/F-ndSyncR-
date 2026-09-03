@@ -90,4 +90,44 @@ export class EmailService {
       return false;
     }
   }
+
+  /**
+   * Send login OTP
+   */
+  static async sendLoginOtp(toEmail: string, otp: string): Promise<boolean> {
+    if (!resend) {
+      console.warn('RESEND_API_KEY is not set. Login OTP Email not sent.');
+      return false;
+    }
+
+    try {
+      const { error } = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: toEmail,
+        subject: 'F!ndSyncR Login OTP',
+        html: `
+          <div style="font-family: sans-serif; padding: 20px; color: #333;">
+            <h2 style="color: #4A90E2;">Student Login</h2>
+            <p>You requested to log in to F!ndSyncR.</p>
+            <p>Your one-time password (OTP) is:</p>
+            <div style="margin: 30px 0; padding: 20px; background-color: #f5f5f5; border-radius: 8px; text-align: center;">
+              <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #333;">${otp}</span>
+            </div>
+            <p>This code expires in 5 minutes.</p>
+            <p>If you did not request this, please ignore this email.</p>
+            <p>Thank you,<br/>The F!ndSyncR Team</p>
+          </div>
+        `,
+      });
+
+      if (error) {
+        console.error('Resend Login OTP Email Error:', error);
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.error('Failed to send login OTP:', e);
+      return false;
+    }
+  }
 }
