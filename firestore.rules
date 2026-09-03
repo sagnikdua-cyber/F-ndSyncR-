@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Students Collection
+    match /students/{studentId} {
+      // A student can only read and update their own document
+      allow read: if request.auth != null && request.auth.uid == studentId;
+      
+      // Updates are restricted to the owner, and cannot change core identity fields like enrollmentNumber
+      allow update: if request.auth != null && request.auth.uid == studentId
+                    && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['enrollmentNumber', 'collegeEmail', 'firebaseUid']);
+      
+      // Creation is strictly controlled by the backend Admin SDK during registration. 
+      // This enforces enrollmentNumber uniqueness globally, which client rules cannot do easily without a separate registry.
+      allow create: if false; 
+      allow delete: if false;
+    }
+
+    // Lost Items Collection
+    match /lostItems/{itemId} {
+      // Students can only read and write their own lost items
+      allow read, update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+      // When creating, the ownerId must match their token uid
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+    }
+
+    // Found Items Collection
+    match /foundItems/{itemId} {
+      // Found items creation is strictly controlled by the backend Admin SDK / Intake API
+      // so clients cannot bypass the Gemini AI structured output or 7-day expiry rules
+      allow create, update, delete: if false;
+      
+      // Students can read found items if they are matched/public (logic to be refined in matching phase)
+      allow read: if request.auth != null;
+    }
+
+    // Matches Collection
+    match /matches/{matchId} {
+      // Students can only read matches where they are the candidate
+      allow read: if request.auth != null && resource.data.candidateOwnerId == request.auth.uid;
+      // Creation/Update strictly controlled by backend matching service
+      allow create, update, delete: if false;
+    }
+
+    // Default deny for all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

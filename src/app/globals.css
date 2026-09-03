@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fcfbf9; /* warm white / cream */
+  --foreground: #334155; /* slate-700 for dark readable text */
+  --surface: #ffffff;
+  --primary: #a7c7e7; /* soft pastel blue */
+  --primary-foreground: #1e293b;
+  --secondary: #c8b6e2; /* lavender */
+  --secondary-foreground: #1e293b;
+  --success: #a8e6cf; /* mint green */
+  --success-foreground: #064e3b;
+  --accent: #ffdab9; /* subtle peach */
+  --accent-foreground: #431407;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  @apply antialiased selection:bg-primary/30;
+}
+
+/* Base styles for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
