@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase/admin';
 import { EmailService } from '@/services/email.service';
 
-// In-memory store for OTPs (strictly for Phase 2 prototype before a real cache/DB is used)
-const otpStore = new Map<string, { otp: string; expiresAt: number; uid: string }>();
+
 
 export async function POST(request: Request) {
   try {
@@ -39,12 +38,12 @@ export async function POST(request: Request) {
     if (action === 'generate') {
       // 1. Generate 6-digit OTP
       const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minute expiry
       
-      // 2. Store OTP temporarily (5 minute expiry)
-      otpStore.set(enrollmentNumber, {
-        otp: generatedOtp,
-        expiresAt: Date.now() + 5 * 60 * 1000,
-        uid
+      // 2. Store OTP in Firestore (stateless compatible)
+      await adminDb.collection('students').doc(uid).update({
+        loginOtp: generatedOtp,
+        loginOtpExpiresAt: expiresAt,
       });
 
       // 3. Send via Resend
@@ -69,25 +68,33 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'OTP required' }, { status: 400 });
       }
 
-      const record = otpStore.get(enrollmentNumber);
+      // Read OTP from the student's Firestore document
+      const storedOtp = studentData.loginOtp;
+      const expiresAt = studentData.loginOtpExpiresAt;
       
-      if (!record) {
+      if (!storedOtp || !expiresAt) {
         return NextResponse.json({ error: 'No OTP requested or it expired' }, { status: 400 });
       }
 
-      if (Date.now() > record.expiresAt) {
-        otpStore.delete(enrollmentNumber);
+      if (Date.now() > expiresAt) {
+        await adminDb.collection('students').doc(uid).update({
+          loginOtp: null,
+          loginOtpExpiresAt: null,
+        });
         return NextResponse.json({ error: 'OTP expired' }, { status: 400 });
       }
 
-      if (record.otp !== otp) {
+      if (storedOtp !== otp) {
         return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 });
       }
 
-      // Verification successful! Mint Custom Token
-      otpStore.delete(enrollmentNumber);
+      // Verification successful! Clear the OTP and Mint Custom Token
+      await adminDb.collection('students').doc(uid).update({
+        loginOtp: null,
+        loginOtpExpiresAt: null,
+      });
       
-      const customToken = await adminAuth.createCustomToken(record.uid);
+      const customToken = await adminAuth.createCustomToken(uid);
       
       return NextResponse.json({ token: customToken });
     }
