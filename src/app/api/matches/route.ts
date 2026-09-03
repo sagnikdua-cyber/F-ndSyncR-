@@ -20,10 +20,9 @@ export async function GET(req: NextRequest) {
 
     if (!adminDb) return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
 
-    // Fetch matches for this student
+    // Fetch matches for this student without orderBy to avoid requiring a composite index
     const snapshot = await adminDb.collection("matches")
       .where("candidateOwnerId", "==", userId)
-      .orderBy("createdAt", "desc")
       .get();
 
     const matches = await Promise.all(snapshot.docs.map(async (doc) => {
@@ -55,6 +54,9 @@ export async function GET(req: NextRequest) {
         foundItemId: matchData.foundItemId,
       };
     }));
+
+    // Sort matches locally by descending creation date
+    matches.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({ matches });
   } catch (error) {
