@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
     }));
 
     // Sort items locally by descending creation date
-    items.sort((a: any, b: any) => new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime());
+    items.sort((a: Record<string, unknown>, b: Record<string, unknown>) => new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime());
 
     return NextResponse.json({ items });
   } catch (error: unknown) {

@@ -57,7 +57,7 @@ export default function ClaimPage() {
             
             setQuestion(vData.question);
             setStep('verify');
-          } catch (e: unknown) {
+          } catch {
             setError('Error starting verification.');
           } finally {
             setLoading(false);
@@ -67,7 +67,7 @@ export default function ClaimPage() {
         } else {
           setStep('initial');
         }
-      } catch (e: unknown) {
+      } catch {
         setError('Network error validating token.');
       } finally {
         setLoading(false);
@@ -75,7 +75,6 @@ export default function ClaimPage() {
     };
 
     validateToken();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handleDecline = async () => {
@@ -87,7 +86,7 @@ export default function ClaimPage() {
         body: JSON.stringify({ token })
       });
       setStep('declined');
-    } catch (e: unknown) {
+    } catch {
       setError('Error declining claim.');
     } finally {
       setLoading(false);
@@ -107,7 +106,7 @@ export default function ClaimPage() {
       
       setQuestion(data.question);
       setStep('verify');
-    } catch (e: unknown) {
+    } catch {
       setError('Error starting verification.');
     } finally {
       setLoading(false);
@@ -147,7 +146,7 @@ export default function ClaimPage() {
       } else {
         setError('Failed to send OTP.');
       }
-    } catch (e: unknown) {
+    } catch {
       setVerifyError('Error verifying answer.');
     } finally {
       setVerifyLoading(false);
@@ -177,7 +176,7 @@ export default function ClaimPage() {
       }
       
       setStep('success');
-    } catch (e: unknown) {
+    } catch {
       setOtpError('Error verifying OTP.');
     } finally {
       setOtpLoading(false);

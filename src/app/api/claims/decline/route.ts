@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { adminDb } from '@/lib/firebase/admin';
 import { MatchRecord } from '@/types';
-import { ClaimService } from '@/services/claim.service';
 
 export async function POST(req: NextRequest) {
   try {

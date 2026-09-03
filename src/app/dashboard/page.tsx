@@ -8,7 +8,7 @@ import { useAuth } from "@/components/providers/AuthProvider";
 import { AuthService } from "@/services/auth.service";
 
 export default function DashboardPage() {
-  const { studentData } = useAuth();
+  const { studentData, claims } = useAuth();
   
   const handleLogout = async () => {
     await AuthService.signOut();
@@ -95,14 +95,16 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </Link>
-          <Link href="/admin">
-            <Card className="hover:border-primary/50 cursor-pointer h-full transition-all active:scale-[0.98] bg-slate-50">
-              <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2 h-full">
-                <ShieldCheck className="w-6 h-6 text-slate-400" />
-                <span className="text-sm font-medium text-slate-500">Admin Area</span>
-              </CardContent>
-            </Card>
-          </Link>
+          {claims?.role === 'admin' && (
+            <Link href="/admin">
+              <Card className="hover:border-primary/50 cursor-pointer h-full transition-all active:scale-[0.98] bg-slate-50">
+                <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2 h-full">
+                  <ShieldCheck className="w-6 h-6 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-500">Admin Area</span>
+                </CardContent>
+              </Card>
+            </Link>
+          )}
         </div>
       </div>
     </div>

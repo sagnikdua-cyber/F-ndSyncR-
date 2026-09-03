@@ -6,7 +6,7 @@ import { LoadingSkeleton } from "@/components/ui/LoadingSkeleton";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { BackButton } from "@/components/ui/BackButton";
-import { CheckCircle, MapPin, Package, ArrowRight, ShieldCheck } from "lucide-react";
+import { CheckCircle, MapPin, Package, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { cn } from "@/lib/utils";
 

@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Upload, Box } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
 
 export default function FoundItemPage() {
-  const { user } = useAuth();
+  const { user, claims, loading: authLoading } = useAuth();
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,25 @@ export default function FoundItemPage() {
   const generateIdempotencyKey = () => {
     setIdempotencyKey(crypto.randomUUID());
   };
+
+  if (!authLoading && (!claims || (claims.role !== 'admin' && claims.role !== 'intake'))) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6 md:p-12 flex flex-col items-center justify-center">
+        <Card className="max-w-md w-full border-border/50 shadow-xl shadow-slate-200/50 text-center p-8">
+          <div className="mx-auto bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+            <span className="text-3xl">🚫</span>
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">Unauthorized Access</h2>
+          <p className="text-muted-foreground mb-6">
+            You don&apos;t have permission to access Found Item Intake. This feature is restricted to authorized personnel.
+          </p>
+          <Link href="/dashboard">
+            <Button className="w-full">Back to Dashboard</Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

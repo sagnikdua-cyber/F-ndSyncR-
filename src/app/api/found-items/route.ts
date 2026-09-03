@@ -19,12 +19,17 @@ export async function POST(request: NextRequest) {
     let decodedToken;
     try {
       decodedToken = await adminAuth?.verifyIdToken(idToken);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
     }
 
     if (!decodedToken) {
       return NextResponse.json({ error: "Unauthorized: Token verification failed" }, { status: 401 });
+    }
+
+    // 1.2 Check Role (RBAC)
+    if (decodedToken.role !== 'admin' && decodedToken.role !== 'intake') {
+      return NextResponse.json({ error: "Forbidden: Insufficient permissions for intake" }, { status: 403 });
     }
 
     // 1.5 Idempotency Check
