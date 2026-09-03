@@ -116,12 +116,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Firebase Admin not configured' }, { status: 503 });
     }
 
-    const snapshot = await adminDb.collection('lostItems').where('ownerId', '==', uid).orderBy('createdAt', 'desc').get();
+    // Fetch items without orderBy to avoid requiring a composite index
+    const snapshot = await adminDb.collection('lostItems').where('ownerId', '==', uid).get();
     
     const items = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
+
+    // Sort items locally by descending creation date
+    items.sort((a: any, b: any) => new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime());
 
     return NextResponse.json({ items });
   } catch (error: unknown) {
