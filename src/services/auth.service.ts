@@ -12,6 +12,12 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'generate', enrollmentNumber }),
       });
+      
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        return { error: 'A server error occurred. Please try again.' };
+      }
+      
       const data = await res.json();
       
       if (!res.ok) {
@@ -34,6 +40,12 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'verify', enrollmentNumber, otp }),
       });
+      
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        return { success: false, error: 'A server error occurred. Please try again.' };
+      }
+      
       const data = await res.json();
 
       if (!res.ok) {
@@ -61,6 +73,12 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(studentData),
       });
+      
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        return { success: false, error: 'A server error occurred. Please try again.' };
+      }
+      
       const data = await res.json();
 
       if (!res.ok) {

@@ -42,8 +42,10 @@ function initializeAdmin() {
     });
   } catch (error) {
     console.error('Firebase Admin Server-Side Configuration Error:', error instanceof Error ? error.message : 'Unknown error');
-    // We throw to prevent the server from silently accepting an invalid credential state at runtime
-    throw new Error('Failed to initialize Firebase Admin. The private key or credentials may be invalid.');
+    // We log the error but do NOT throw at the top-level module scope, 
+    // because throwing here crashes Next.js API routes with an empty 500 response.
+    // Instead, allowing it to complete leaves adminAuth/adminDb as null, 
+    // which the API routes handle gracefully with a controlled 503 JSON response.
   }
 }
 
