@@ -43,47 +43,33 @@ export default function IntroPage() {
 
       <div className="relative w-full max-w-4xl h-[80vh] flex items-end justify-between px-4 md:px-12 pb-12">
         
-        {/* Boy Character & Bubble (Left) */}
+        {/* Boy Character & Message (Left) */}
         <div className={cn(
-          "relative flex flex-col items-center transition-all duration-1000 ease-out z-10 w-1/2",
+          "relative flex flex-col items-center justify-end transition-all duration-1000 ease-out z-10 w-1/2",
           step >= 1 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-32"
         )}>
-          {/* Boy's Speech Bubble */}
-          <div className="bg-white p-4 mb-4 rounded-3xl rounded-br-sm shadow-lg border border-slate-100 max-w-[250px] relative z-20">
-            <p className="text-sm md:text-lg text-slate-800 font-medium">
-              &quot;Have you lost your belongings?&quot;
-            </p>
-          </div>
-          {/* Boy Sprite (Clipping the left third of the image) */}
-          <div className="relative w-48 h-72 md:w-64 md:h-96 overflow-hidden drop-shadow-xl">
+          <div className="relative w-full aspect-[3/4] max-w-[300px] md:max-w-[400px] drop-shadow-xl">
              <Image 
-               src="/assets/Animation img.png" 
-               alt="Boy" 
+               src="/assets/boy.png" 
+               alt="Boy with message" 
                fill 
-               className="object-cover object-[20%_60%] scale-[2.2] translate-y-8 mix-blend-multiply pointer-events-none" 
+               className="object-contain mix-blend-multiply pointer-events-none" 
                priority
              />
           </div>
         </div>
 
-        {/* Girl Character & Bubble (Right) */}
+        {/* Girl Character & Message (Right) */}
         <div className={cn(
-          "relative flex flex-col items-center transition-all duration-1000 ease-out z-10 w-1/2",
+          "relative flex flex-col items-center justify-end transition-all duration-1000 ease-out z-10 w-1/2",
           step >= 2 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-32"
         )}>
-          {/* Girl's Speech Bubble */}
-          <div className="bg-primary p-4 mb-4 rounded-3xl rounded-bl-sm shadow-lg border border-primary/20 text-primary-foreground max-w-[280px] relative z-20">
-            <p className="text-sm md:text-lg font-medium">
-              &quot;Don&apos;t worry! Our friend F!ndSyncR will help you get it back.&quot;
-            </p>
-          </div>
-          {/* Girl Sprite (Clipping the middle third of the image) */}
-          <div className="relative w-48 h-72 md:w-64 md:h-96 overflow-hidden drop-shadow-xl">
+          <div className="relative w-full aspect-[3/4] max-w-[300px] md:max-w-[400px] drop-shadow-xl">
              <Image 
-               src="/assets/Animation img.png" 
-               alt="Girl" 
+               src="/assets/girl.png" 
+               alt="Girl with message" 
                fill 
-               className="object-cover object-[50%_60%] scale-[2.2] translate-y-8 mix-blend-multiply pointer-events-none" 
+               className="object-contain mix-blend-multiply pointer-events-none" 
                priority
              />
           </div>
