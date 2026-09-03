@@ -99,7 +99,7 @@ export default function MyLostItemsPage() {
             {items.map(item => (
               <Card key={item.id} className="border-border/50 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow">
                 <div className="h-40 bg-slate-100 relative">
-                  {item.imageUrl ? (
+                  {item.imageUrl && !item.imageUrl.includes('mock-storage.url') ? (
                     <Image src={item.imageUrl} alt={item.itemName} fill className="object-cover" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-slate-400">
