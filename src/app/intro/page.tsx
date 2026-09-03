@@ -16,16 +16,18 @@ export default function IntroPage() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     if (prefersReducedMotion) {
-      setTimeout(() => setStep(3), 0); // Skip to final static state
+      setTimeout(() => setStep(5), 0); // Skip to final static state
       const timer = setTimeout(() => router.push("/welcome"), 3000);
       return () => clearTimeout(timer);
     }
 
     const timers = [
-      setTimeout(() => setStep(1), 500),   // Show image & first bubble
-      setTimeout(() => setStep(2), 2500),  // Show second bubble
-      setTimeout(() => setStep(3), 4500),  // Start exit
-      setTimeout(() => router.push("/welcome"), 5000) // Navigate
+      setTimeout(() => setStep(1), 500),   // Boy in
+      setTimeout(() => setStep(2), 1500),  // Boy message
+      setTimeout(() => setStep(3), 2500),  // Girl in
+      setTimeout(() => setStep(4), 3500),  // Girl message
+      setTimeout(() => setStep(5), 5500),  // Exit
+      setTimeout(() => router.push("/welcome"), 6000)
     ];
 
     return () => timers.forEach(clearTimeout);
@@ -46,14 +48,27 @@ export default function IntroPage() {
         {/* Boy Character & Message (Left) */}
         <div className={cn(
           "relative flex flex-col items-center justify-end transition-all duration-1000 ease-out z-10 w-1/2",
-          step >= 1 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-32"
+          step >= 1 && step < 5 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-32"
         )}>
-          <div className="relative w-full aspect-[768/1024] max-w-[350px] md:max-w-[450px] drop-shadow-xl">
+          {/* Boy Message */}
+          <div className={cn(
+            "relative w-full max-w-[250px] aspect-[2/1] mb-4 transition-all duration-700 ease-out",
+            step >= 2 && step < 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}>
+            <Image 
+              src="/assets/boy_message.png" 
+              alt="Boy Message" 
+              fill 
+              className="object-contain" 
+            />
+          </div>
+          {/* Boy Sprite */}
+          <div className="relative w-48 h-72 md:w-64 md:h-96 drop-shadow-xl">
              <Image 
-               src="/assets/Animation img.png" 
-               alt="Boy with message" 
+               src="/assets/boy.png" 
+               alt="Boy" 
                fill 
-               className="object-cover object-left mix-blend-multiply pointer-events-none" 
+               className="object-contain drop-shadow-md" 
                priority
              />
           </div>
@@ -62,14 +77,27 @@ export default function IntroPage() {
         {/* Girl Character & Message (Right) */}
         <div className={cn(
           "relative flex flex-col items-center justify-end transition-all duration-1000 ease-out z-10 w-1/2",
-          step >= 2 && step < 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-32"
+          step >= 3 && step < 5 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-32"
         )}>
-          <div className="relative w-full aspect-[768/1024] max-w-[350px] md:max-w-[450px] drop-shadow-xl">
+          {/* Girl Message */}
+          <div className={cn(
+            "relative w-full max-w-[280px] aspect-[2/1] mb-4 transition-all duration-700 ease-out",
+            step >= 4 && step < 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}>
+            <Image 
+              src="/assets/girl_message.png" 
+              alt="Girl Message" 
+              fill 
+              className="object-contain" 
+            />
+          </div>
+          {/* Girl Sprite */}
+          <div className="relative w-48 h-72 md:w-64 md:h-96 drop-shadow-xl">
              <Image 
-               src="/assets/Animation img.png" 
-               alt="Girl with message" 
+               src="/assets/girl.png" 
+               alt="Girl" 
                fill 
-               className="object-cover object-right mix-blend-multiply pointer-events-none" 
+               className="object-contain drop-shadow-md" 
                priority
              />
           </div>
