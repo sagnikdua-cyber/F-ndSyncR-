@@ -123,7 +123,9 @@ export default function MyLostItemsPage() {
                   <p className="text-sm text-slate-600 line-clamp-2">{item.description}</p>
                 </CardContent>
                 <CardFooter className="bg-slate-50 border-t border-border/50 pt-4 pb-4">
-                  <Button variant="outline" className="w-full text-xs h-9">View Matches</Button>
+                  <Link href="/matches" className="w-full">
+                    <Button variant="outline" className="w-full text-xs h-9">View Matches</Button>
+                  </Link>
                 </CardFooter>
               </Card>
             ))}
